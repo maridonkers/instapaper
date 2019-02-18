@@ -81,7 +81,7 @@
 
 (defn -main [& args]
   (if (not= 2 (count args))
-    (println "Usage: lein run instapaper <input-file-name> <output-file-name>.")
+    (println "Usage: lein run input-file-name output-file-name.")
     (let [input-fname (first args)
           output-fname (second args)
           
