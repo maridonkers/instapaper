@@ -66,7 +66,7 @@
     (if (zip/end? loc)
       (zip/root loc)
       (if-let [matched (matcher loc links)]
-        (let [new-loc (editor loc) #_(zip/edit loc editor)]
+        (let [new-loc (editor loc)]
           (if (not= (zip/node new-loc) (zip/node loc))
             (recur (zip/next new-loc) links)))
         (recur (zip/next loc) links)))))
@@ -76,7 +76,7 @@
   [html-in]
   (-> (prune-duplicates-from-html-tree (hkz/hickory-zip (hkc/as-hickory (hkc/parse html-in)))
                       is-hyperlink-duplicate?
-                      delete-node #_hilight-node)
+                      delete-node)
       hkr/hickory-to-html))
 
 (defn -main [& args]
