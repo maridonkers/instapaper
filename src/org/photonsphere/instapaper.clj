@@ -77,8 +77,8 @@
                                            hkc/parse 
                                            hkc/as-hickory 
                                            hkz/hickory-zip)
-                      is-hyperlink-duplicate?
-                      delete-node)
+                                       is-hyperlink-duplicate?
+                                       delete-node)
       hkr/hickory-to-html))
 
 (defn -main [& args]
