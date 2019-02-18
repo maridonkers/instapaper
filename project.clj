@@ -10,4 +10,8 @@
                  [hickory "0.7.1"]]
 
   :source-paths ["src"]
-  :main org.photonsphere.instapaper)
+  :main org.photonsphere.instapaper
+
+  :profiles {:uberjar {:target-path "target/uberjar"
+                       :uberjar-name "instapaper.jar"
+                       :aot :all}})
