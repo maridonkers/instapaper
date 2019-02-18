@@ -56,18 +56,17 @@
 
 (defn prune-duplicates-from-html-tree
   "Take a zipper, a function that matches a pattern in the tree,
-   and a function that edits the current location in the tree. Examine the tree
-   nodes in depth-first order, determine whether the matcher matches, and if so
-   apply the editor."
-  [zipper matcher editor]
+   and an action function that does an action at the current location
+  in the tree. Examine the tree nodes in depth-first order, determine
+  whether the matcher matches, and if so apply the action."
+  [zipper matcher action]
   (loop [loc zipper
          links (atom {})]
     (if (zip/end? loc)
       (zip/root loc)
       (if-let [matched (matcher loc links)]
-        (let [new-loc (editor loc)]
-          (when (not= (zip/node new-loc) (zip/node loc))
-            (recur (zip/next new-loc) links)))
+        (let [new-loc (action loc)]
+          (recur (zip/next new-loc) links))
         (recur (zip/next loc) links)))))
 
 (defn remove-duplicate-hyperlinks
@@ -86,7 +85,6 @@
     (println "Usage: lein run input-file-name output-file-name.")
     (let [input-fname (first args)
           output-fname (second args)
-          
           html (slurp input-fname)
           html-without-duplicates (remove-duplicate-hyperlinks html)]
       
