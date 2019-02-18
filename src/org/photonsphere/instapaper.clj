@@ -66,7 +66,7 @@
       (zip/root loc)
       (if-let [matched (matcher loc links)]
         (let [new-loc (editor loc)]
-          (if (not= (zip/node new-loc) (zip/node loc))
+          (when (not= (zip/node new-loc) (zip/node loc))
             (recur (zip/next new-loc) links)))
         (recur (zip/next loc) links)))))
 
