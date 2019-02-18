@@ -22,8 +22,7 @@
 
   Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers"
   
-  (:require [clojure.tools.cli :refer [parse-opts]]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [clojure.zip :as zip]
             [hickory.core :as hkc]
             [hickory.render :as hkr]
@@ -74,7 +73,10 @@
 (defn remove-duplicate-hyperlinks
   "Removes duplicate hyperlinks from html input (with their surrounding <li> tags)."
   [html-in]
-  (-> (prune-duplicates-from-html-tree (hkz/hickory-zip (hkc/as-hickory (hkc/parse html-in)))
+  (-> (prune-duplicates-from-html-tree (-> html-in
+                                           hkc/parse 
+                                           hkc/as-hickory 
+                                           hkz/hickory-zip)
                       is-hyperlink-duplicate?
                       delete-node)
       hkr/hickory-to-html))
