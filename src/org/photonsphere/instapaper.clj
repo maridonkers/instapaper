@@ -43,10 +43,8 @@
         href (get-in node [:attrs :href])
         has-href? (not (str/blank? href))
         is-duplicate? (get @links href false)]
-    
     (when (and is-li-parent? is-anchor? has-href? (not is-duplicate?))
       (swap! links assoc href true))
-
     (and is-li-parent? is-anchor? has-href? is-duplicate?)))
 
 (defn delete-node
@@ -56,9 +54,9 @@
 
 (defn prune-duplicates-from-html-tree
   "Take a zipper, a function that matches a pattern in the tree,
-   and an action function that does an action at the current location
-  in the tree. Examine the tree nodes in depth-first order, determine
-  whether the matcher matches, and if so apply the action."
+   and an action function that performs an action at the current
+  location in the tree. Examine the tree nodes in depth-first order,
+  determine whether the matcher matches, and if so apply the action."
   [zipper matcher action]
   (let [links (atom {})]
     (loop [loc zipper]
@@ -70,15 +68,17 @@
           (recur (zip/next loc)))))))
 
 (defn remove-duplicate-hyperlinks
-  "Removes duplicate hyperlinks from html input (with their surrounding <li> tags)."
+  "Removes duplicate hyperlinks from html input (with their surrounding
+  <li> tags)."
   [html-in]
-  (-> (prune-duplicates-from-html-tree (-> html-in
-                                           hkc/parse 
-                                           hkc/as-hickory 
-                                           hkz/hickory-zip)
-                                       is-hyperlink-duplicate?
-                                       delete-node)
-      hkr/hickory-to-html))
+  (let [zipper (-> html-in
+                   hkc/parse 
+                   hkc/as-hickory 
+                   hkz/hickory-zip)]
+    (-> (prune-duplicates-from-html-tree zipper
+                                         is-hyperlink-duplicate?
+                                         delete-node)
+        hkr/hickory-to-html)))
 
 (defn -main [& args]
   (if (not= 2 (count args))
@@ -87,6 +87,5 @@
           output-fname (second args)
           html (slurp input-fname)
           html-without-duplicates (remove-duplicate-hyperlinks html)]
-      
       (spit output-fname
             html-without-duplicates))))
