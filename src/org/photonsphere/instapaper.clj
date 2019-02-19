@@ -60,14 +60,14 @@
   in the tree. Examine the tree nodes in depth-first order, determine
   whether the matcher matches, and if so apply the action."
   [zipper matcher action]
-  (loop [loc zipper
-         links (atom {})]
-    (if (zip/end? loc)
-      (zip/root loc)
-      (if-let [matched (matcher loc links)]
-        (let [new-loc (action loc)]
-          (recur (zip/next new-loc) links))
-        (recur (zip/next loc) links)))))
+  (let [links (atom {})]
+    (loop [loc zipper]
+      (if (zip/end? loc)
+        (zip/root loc)
+        (if-let [matched (matcher loc links)]
+          (let [new-loc (action loc)]
+            (recur (zip/next new-loc)))
+          (recur (zip/next loc)))))))
 
 (defn remove-duplicate-hyperlinks
   "Removes duplicate hyperlinks from html input (with their surrounding <li> tags)."
